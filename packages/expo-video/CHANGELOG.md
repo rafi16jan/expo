@@ -10,6 +10,8 @@
 
 ### 🐛 Bug fixes
 
+- [iOS] Fix the conversion error when setting some specific numbers as `playbackRate` or `volume`.
+
 ### 💡 Others
 
 - [Android] Improve HLS compatibility. ([#28997](https://github.com/expo/expo/pull/28997) by [@behenate](https://github.com/behenate))
