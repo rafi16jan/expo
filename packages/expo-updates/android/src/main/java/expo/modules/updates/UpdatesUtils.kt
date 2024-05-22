@@ -23,6 +23,7 @@ import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.experimental.and
 
 /**
@@ -276,5 +277,48 @@ object UpdatesUtils {
       // Throw if the second parse attempt fails
       throw e
     }
+  }
+
+  private const val TOKEN: String = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)"
+  private const val QUOTED: String = "\"([^\"]*)\""
+  private val PARAMETER_PATTERN: Pattern = Pattern.compile(";\\s*(?:$TOKEN=(?:$TOKEN|$QUOTED))?")
+
+  /**
+   * Derived from okhttp MediaType String.toMediaType
+   */
+  fun String.parseContentDisposition(): Map<String, String> {
+    val parameterNamesAndValues = mutableMapOf<String, String>()
+    val parameterMatcher = PARAMETER_PATTERN.matcher(this)
+    var s = this.indexOf(';')
+    while (s < length) {
+      parameterMatcher.region(s, length)
+      require(parameterMatcher.lookingAt()) {
+        "Parameter is not formatted correctly: \"${substring(s)}\" for: \"$this\""
+      }
+
+      val name = parameterMatcher.group(1)
+      if (name == null) {
+        s = parameterMatcher.end()
+        continue
+      }
+
+      val token = parameterMatcher.group(2)
+      val value = when {
+        token == null -> {
+          // Value is "double-quoted". That's valid and our regex group already strips the quotes.
+          parameterMatcher.group(3)
+        }
+        token.startsWith("'") && token.endsWith("'") && token.length > 2 -> {
+          // If the token is 'single-quoted' it's invalid! But we're lenient and strip the quotes.
+          token.substring(1, token.length - 1)
+        }
+        else -> token
+      }
+
+      parameterNamesAndValues[name] = value
+      s = parameterMatcher.end()
+    }
+
+    return parameterNamesAndValues
   }
 }
