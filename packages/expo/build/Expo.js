@@ -7,4 +7,5 @@ export {
 EventEmitter, SharedObject, NativeModule, 
 // Methods
 requireNativeModule, requireOptionalNativeModule, reloadAppAsync, } from 'expo-modules-core';
+export { useEvent } from './hooks/useEvent';
 //# sourceMappingURL=Expo.js.map

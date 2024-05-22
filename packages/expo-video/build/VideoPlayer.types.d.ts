@@ -1,8 +1,8 @@
-import type { SharedObject } from 'expo-modules-core';
+import type { SharedObject } from 'expo-modules-core/types';
 /**
  * A class that represents an instance of the video player.
  */
-export declare class VideoPlayer extends SharedObject<VideoPlayerEvents> {
+export declare class VideoPlayer extends SharedObject<VideoPlayerEvents> implements SharedObject<VideoPlayerEvents> {
     /**
      * Boolean value whether the player is currently playing.
      * > This property is get-only, use `play` and `pause` methods to control the playback.
