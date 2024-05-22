@@ -207,7 +207,7 @@ class FileDownloader(context: Context, private val configuration: UpdatesConfigu
     var certificateChainString: String? = null
     var directivePartBodyAndHeaders: Pair<String, Headers>? = null
 
-    val multipartStream = MultipartStream(responseBody.byteStream(), boundary.toByteArray())
+    val multipartStream = MultipartStream(responseBody.byteStream(), boundary.toByteArray(), DEFAULT_BUFFER_SIZE, null)
 
     try {
       var nextPart = multipartStream.skipPreamble()
